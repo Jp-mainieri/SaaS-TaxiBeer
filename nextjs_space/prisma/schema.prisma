@@ -1,0 +1,121 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/beer_delivery_saas/nextjs_space/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  STORE_ADMIN
+}
+
+enum ProductType {
+  SALE
+  RENTAL
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum OrderType {
+  DELIVERY
+  PICKUP
+}
+
+model Establishment {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  logo        String?
+  phone       String?
+  whatsapp    String?
+  address     String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       User[]
+  categories  Category[]
+  products    Product[]
+  orders      Order[]
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  password        String
+  name            String?
+  role            UserRole  @default(STORE_ADMIN)
+  establishmentId String?
+  establishment   Establishment? @relation(fields: [establishmentId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Category {
+  id              String        @id @default(cuid())
+  name            String
+  order           Int           @default(0)
+  establishmentId String
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  products        Product[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([name, establishmentId])
+}
+
+model Product {
+  id              String        @id @default(cuid())
+  name            String
+  description     String?
+  price           Float
+  image           String?
+  type            ProductType   @default(SALE)
+  featured        Boolean       @default(false)
+  active          Boolean       @default(true)
+  categoryId      String
+  category        Category      @relation(fields: [categoryId], references: [id])
+  establishmentId String
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  orderItems      OrderItem[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     Int           @default(autoincrement())
+  status          OrderStatus   @default(PENDING)
+  type            OrderType     @default(DELIVERY)
+  customerName    String
+  customerPhone   String
+  address         String?
+  date            String
+  time            String
+  notes           String?
+  total           Float
+  establishmentId String
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  items           OrderItem[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  quantity  Int
+  price     Float
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+}

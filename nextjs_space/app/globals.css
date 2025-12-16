@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #F59E0B;
+  --primary-dark: #D97706;
+  --background: #FFFBEB;
+}
+
+[data-hydration-error] {
+  display: none !important;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-amber-50 text-gray-900;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
