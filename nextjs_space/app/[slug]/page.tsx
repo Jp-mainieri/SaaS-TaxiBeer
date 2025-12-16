@@ -42,7 +42,7 @@ export default async function StorePage({ params }: { params: { slug: string } }
     phone: establishment.phone ?? undefined,
     whatsapp: establishment.whatsapp ?? undefined,
     address: establishment.address ?? undefined,
-    categories: establishment.categories.map(cat => ({
+    categories: establishment.categories.map((cat: any) => ({
       ...cat,
       products: cat.products.map(p => ({
         ...p,
