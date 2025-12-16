@@ -44,7 +44,7 @@ export default async function StorePage({ params }: { params: { slug: string } }
     address: establishment.address ?? undefined,
     categories: establishment.categories.map((cat: any) => ({
       ...cat,
-      products: cat.products.map(p => ({
+      products: cat.products.map((p:any) => ({
         ...p,
         description: p.description ?? undefined,
         image: p.image ?? undefined,
