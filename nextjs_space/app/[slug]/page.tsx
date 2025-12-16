@@ -50,7 +50,7 @@ export default async function StorePage({ params }: { params: { slug: string } }
         image: p.image ?? undefined,
       }))
     })),
-    products: establishment.products.map(p => ({
+    products: establishment.products.map((p:any) => ({
       ...p,
       description: p.description ?? undefined,
       image: p.image ?? undefined,
